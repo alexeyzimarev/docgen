@@ -11,13 +11,13 @@ namespace Ubiquitous.DocGen.Markdown
     {
         public static StringBuilder GenerateBaseMarkdown(this MetadataItem item, int level)
         {
-            if (item.Sees?.Count > 0 || item.SeeAlsos?.Count > 0)
-            {
-                Console.WriteLine("Sees!");
-            }
+            // if (item.References?.Count > 0)
+            // {
+            //     Console.WriteLine("refs!");
+            // }
 
             var md = new StringBuilder()
-                .AppendLine(Header(level, $"{item.Type} {item.DisplayName.Encode()}"))
+                .AppendLine(Header(level, $"{item.Type} `{item.DisplayName}`"))
                 .AppendLine(item.Summary);
 
             if (!string.IsNullOrWhiteSpace(item.Remarks))
@@ -28,13 +28,25 @@ namespace Ubiquitous.DocGen.Markdown
                     .AppendLine(Header(level + 1, "See also"))
                     .AppendLines(item.SeeAlsos.Select(x => $"[{x.AltText}]({x.LinkId})"));
 
+            if (item.Examples?.Count > 0)
+            {
+                md.AppendLine(Header(level + 1, "Examples"));
+
+                foreach (var example in item.Examples)
+                    md.AddSourceCode(example);
+            }
+
             return md;
         }
 
         public static string Header(int level, string header) => $"{new string('#', level)} {header}";
 
-        public static string Encode(this string s) => s.Replace("<", "&lt;");
-
-        public static IEnumerable<string> MakeList(this IEnumerable<string> lines) => lines.Select(x => $"-  {x.Encode()}");
+        public static IEnumerable<string> MakeList(this IEnumerable<string> lines) => lines.Select(x => $"-  `{x}`");
+        
+        public static StringBuilder AddSourceCode(this StringBuilder stringBuilder, string source)
+            => stringBuilder
+                .AppendLine("```csharp")
+                .AppendLine(source)
+                .AppendLine("```");
     }
 }

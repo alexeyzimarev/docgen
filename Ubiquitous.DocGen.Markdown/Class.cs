@@ -15,7 +15,7 @@ namespace Ubiquitous.DocGen.Markdown
             if (item.Inheritance != null)
                 builder
                     .AppendLine(Header(level + 1, "Inheritance"))
-                    .AppendLines(item.Inheritance.Select((x, l) => $"{new string(' ', l)}↳ {x.Encode()}"));
+                    .AppendLine(string.Join("<br>", item.Inheritance.Select((x, l) => $"{string.Concat(Enumerable.Repeat("&nbsp;", l * 2))}↳ `{x}`")));
 
             if (item.InheritedMembers != null)
                 builder

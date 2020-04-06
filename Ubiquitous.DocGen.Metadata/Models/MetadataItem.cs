@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Ubiquitous.DocGen.Metadata.CodeAnalysis;
 using Ubiquitous.DocGen.Metadata.Comments;
 
 namespace Ubiquitous.DocGen.Metadata.Models
@@ -18,10 +17,6 @@ namespace Ubiquitous.DocGen.Metadata.Models
 
         public string DisplayName { get; set; }
 
-        public string DisplayNameWithType { get; set; }
-
-        public string DisplayQualifiedName { get; set; }
-
         public MemberType Type { get; set; }
 
         public List<string> AssemblyNameList { get; set; }
@@ -38,10 +33,6 @@ namespace Ubiquitous.DocGen.Metadata.Models
 
         public SyntaxDetail Syntax { get; set; }
 
-        public string Overload { get; set; }
-
-        public string Overridden { get; set; }
-
         public List<ExceptionInfo> Exceptions { get; set; }
 
         public List<LinkInfo> Sees { get; set; }
@@ -49,8 +40,6 @@ namespace Ubiquitous.DocGen.Metadata.Models
         public List<LinkInfo> SeeAlsos { get; set; }
 
         public List<string> Inheritance { get; set; }
-
-        public List<string> DerivedClasses { get; set; }
 
         public List<string> Implements { get; set; }
 
@@ -63,8 +52,6 @@ namespace Ubiquitous.DocGen.Metadata.Models
         public List<string> Modifiers { get; set; } = new List<string>();
 
         public List<MetadataItem> Items { get; set; }
-
-        public References References { get; set; }
 
         public bool IsInheritDoc { get; set; }
 

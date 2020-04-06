@@ -1,16 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
-using Ubiquitous.DocGen.Metadata.CodeAnalysis;
 using Ubiquitous.DocGen.Metadata.Models;
 
 namespace Ubiquitous.DocGen.Metadata.Extensions
 {
     static class SymbolExtensions
     {
-        static readonly Regex GenericMethodPostFix = new Regex(@"``\d+$", RegexOptions.Compiled);
-
         public static string GetRawId(this ISymbol symbol)
             => symbol switch
             {
@@ -29,22 +25,6 @@ namespace Ubiquitous.DocGen.Metadata.Extensions
             IDynamicTypeSymbol _ => "T:" + typeof(object).FullName,
             _                    => symbol.GetDocumentationCommentId()
         };
-
-        public static string GetOverloadId(this ISymbol symbol) => GetOverloadIdBody(symbol) + "*";
-
-        public static string GetOverloadIdBody(this ISymbol symbol)
-        {
-            var id      = GetRawId(symbol);
-            var uidBody = id;
-            var index   = uidBody.IndexOf('(');
-            if (index != -1)
-            {
-                uidBody = uidBody.Remove(index);
-            }
-
-            uidBody = GenericMethodPostFix.Replace(uidBody, string.Empty);
-            return uidBody;
-        }
 
         public static SourceDetail GetSourceDetail(this ISymbol symbol)
         {
@@ -76,10 +56,6 @@ namespace Ubiquitous.DocGen.Metadata.Extensions
 
             return source;
         }
-        
-        internal static IReadOnlyList<string> GetTypeGenericParameters(this ISymbol symbol) => symbol.ContainingType.IsGenericType
-            ? (IReadOnlyList<string>) symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance)
-            : new string[0];
 
         internal static string GetSuffix(this IArrayTypeSymbol symbol) => symbol.Rank == 1 ? "[]" : $"[{new string(',', symbol.Rank - 1)}]";
 

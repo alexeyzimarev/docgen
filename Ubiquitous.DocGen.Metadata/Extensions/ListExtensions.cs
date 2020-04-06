@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace Ubiquitous.DocGen.Metadata.Extensions
 {
@@ -19,5 +20,9 @@ namespace Ubiquitous.DocGen.Metadata.Extensions
         public static bool IsNotEmpty<T>(this IList<T> array) => array != null && array.Count > 0;
         
         public static bool IsEmpty<T>(this IList<T> array) => array == null || array.Count == 0;
+        
+        public static bool IsEmpty<T>(this ImmutableArray<T> array) => array == null || array.Length == 0;
+        
+        public static bool IsNotEmpty<T>(this ImmutableArray<T> array) => array != null && array.Length > 0;
     }
 }

@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
@@ -296,7 +295,7 @@ namespace Ubiquitous.DocGen.Metadata.Comments
             Logger.LogInformation("Resolved source for {path} and {region}", source, region);
         }
 
-        Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType)
+        static Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType)
         {
             var iterator = navigator.Select(xpath);
             var result   = new Dictionary<string, string>();
@@ -549,7 +548,7 @@ namespace Ubiquitous.DocGen.Metadata.Comments
             }
         }
 
-        string GetSingleNodeValue(XPathNavigator nav, string selector)
+        static string GetSingleNodeValue(XPathNavigator nav, string selector)
         {
             var node = nav.Clone().SelectSingleNode(selector);
             return node == null ? null : GetXmlValue(node);

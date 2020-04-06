@@ -14,9 +14,7 @@ namespace Ubiquitous.DocGen.Markdown
         {
             var builder = new StringBuilder()
                 .AppendLine(Header(level, "Syntax"))
-                .AppendLine("```csharp")
-                .AppendLine(syntax.Content.Replace("<>", ""))
-                .AppendLine("```");
+                .AddSourceCode(syntax.Content.Replace("<>", ""));
 
             AppendGenericParameters(syntax.TypeParameters);
             AppendParameters(syntax.Parameters);
@@ -32,7 +30,7 @@ namespace Ubiquitous.DocGen.Markdown
                     .AppendLine(Header(level, "Parameters"))
                     .AppendLine("Name | Type | Description")
                     .AppendLine("--- | --- | ---")
-                    .AppendLines(parameters.Select(x => $"{x.Name} | {x.Type.Encode()} | {x.Description}"))
+                    .AppendLines(parameters.Select(x => $"`{x.Name}` | `{x.Type}` | {x.Description}"))
                     .AppendLine();
             }
 
@@ -44,7 +42,7 @@ namespace Ubiquitous.DocGen.Markdown
                     .AppendLine(Header(level, "Generic parameters"))
                     .AppendLine("Name | Description")
                     .AppendLine("--- | ---")
-                    .AppendLines(parameters.Select(x => $"{x.Name} | {x.Description}"))
+                    .AppendLines(parameters.Select(x => $"`{x.Name}` | {x.Description}"))
                     .AppendLine();
             }
 
@@ -56,7 +54,7 @@ namespace Ubiquitous.DocGen.Markdown
                     .AppendLine(Header(level, $"{returnHeader ?? "Returns"}"))
                     .AppendLine("Type | Description")
                     .AppendLine("--- | ---")
-                    .AppendLine($"{syntax.Return.Type.Encode()} | {syntax.Return.Description}")
+                    .AppendLine($"`{syntax.Return.Type}` | {syntax.Return.Description}")
                     .AppendLine();
             }
         }

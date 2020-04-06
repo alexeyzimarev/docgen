@@ -18,13 +18,12 @@ namespace Ubiquitous.DocGen.Metadata.CodeAnalysis
             => symbol != null &&
                 CanVisitCore(symbol, CanVisitAttribute, wantProtectedMember);
 
-        static bool CanVisitCore(
-            ISymbol symbol, Func<ISymbol, bool, bool> filter, bool wantProtectedMember
-        )
+        static bool CanVisitCore(ISymbol symbol, Func<ISymbol, bool, bool> filter, bool wantProtectedMember)
         {
             // check parent visibility
             var current = symbol;
             var parent  = symbol.ContainingSymbol;
+
             while (!(current is INamespaceSymbol) && parent != null)
             {
                 if (!filter(parent, wantProtectedMember))
@@ -44,16 +43,13 @@ namespace Ubiquitous.DocGen.Metadata.CodeAnalysis
             return symbol switch
             {
                 {DeclaredAccessibility: Accessibility.NotApplicable } => true,
-                IMethodSymbol methodSymbol => CanVisitSymbol(methodSymbol,
-                    methodSymbol.ExplicitInterfaceImplementations),
-                IPropertySymbol propertySymbol => CanVisitSymbol(propertySymbol,
-                    propertySymbol.ExplicitInterfaceImplementations),
-                IEventSymbol eventSymbol => CanVisitSymbol(eventSymbol,
-                    eventSymbol.ExplicitInterfaceImplementations),
-                IFieldSymbol fieldSymbol         => CanVisitFieldSymbol(fieldSymbol),
-                INamedTypeSymbol namedTypeSymbol => CanVisitNamedTypeSymbol(namedTypeSymbol),
-                ITypeSymbol ts                   => CanVisitTypeSymbol(ts),
-                _                                => symbol.DeclaredAccessibility == Accessibility.Public
+                IMethodSymbol m                                       => CanVisitSymbol(m, m.ExplicitInterfaceImplementations),
+                IPropertySymbol p                                     => CanVisitSymbol(p, p.ExplicitInterfaceImplementations),
+                IEventSymbol e                                        => CanVisitSymbol(e, e.ExplicitInterfaceImplementations),
+                IFieldSymbol f                                        => CanVisitFieldSymbol(f),
+                INamedTypeSymbol nt                                   => CanVisitNamedTypeSymbol(nt),
+                ITypeSymbol ts                                        => CanVisitTypeSymbol(ts),
+                _                                                     => symbol.DeclaredAccessibility == Accessibility.Public
             };
 
             bool CanVisitTypeSymbol(ITypeSymbol typeSymbol)
@@ -63,9 +59,9 @@ namespace Ubiquitous.DocGen.Metadata.CodeAnalysis
                     TypeKind.TypeParameter => true,
                     TypeKind.Unknown       => false,
                     TypeKind.Error         => false,
-                    TypeKind.Array => filter(((IArrayTypeSymbol) typeSymbol).ElementType, wantProtectedMember),
-                    TypeKind.Pointer => filter(((IPointerTypeSymbol) typeSymbol).PointedAtType, wantProtectedMember),
-                    _ => (typeSymbol.DeclaredAccessibility == Accessibility.Public)
+                    TypeKind.Array         => filter(((IArrayTypeSymbol) typeSymbol).ElementType, wantProtectedMember),
+                    TypeKind.Pointer       => filter(((IPointerTypeSymbol) typeSymbol).PointedAtType, wantProtectedMember),
+                    _                      => typeSymbol.DeclaredAccessibility == Accessibility.Public
                 };
 
             bool CanVisitNamedTypeSymbol(INamedTypeSymbol namedTypeSymbol)
@@ -86,9 +82,7 @@ namespace Ubiquitous.DocGen.Metadata.CodeAnalysis
                 bool CanVisitProtected() => wantProtectedMember && CanVisit();
             }
 
-            bool CanVisitSymbol<T>(
-                T s, ImmutableArray<T> elementsToFilter
-            ) where T : ISymbol
+            bool CanVisitSymbol<T>(T s, ImmutableArray<T> elementsToFilter) where T : ISymbol
                 => s.DeclaredAccessibility switch
                 {
                     Accessibility.Public              => true,
