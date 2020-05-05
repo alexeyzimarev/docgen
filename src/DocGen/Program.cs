@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using DocGen.Markdown;
 using DocGen.Metadata;
+using DocGen.Metadata.Extensions;
 using ProjectAnalyzer = DocGen.Metadata.ProjectAnalyzer;
 
 namespace DocGen
@@ -16,6 +18,13 @@ namespace DocGen
         static async Task Main(string[] args)
         {
             var command = ConfigureCommand();
+
+            if (args.IsEmpty())
+            {
+                Console.WriteLine("You need to specify at least one option.");
+                Console.WriteLine("Run docgen -h to learn about available parameters.");
+                return;
+            }
 
             await command.InvokeAsync(args);
         }
