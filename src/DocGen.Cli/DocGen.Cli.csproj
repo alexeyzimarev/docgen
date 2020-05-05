@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <LangVersion>8</LangVersion>
+    <PackAsTool>true</PackAsTool>
+    <AssemblyName>docgen</AssemblyName>
+    <DefineConstants>$(DefineConstants);DOCGEN</DefineConstants>
+    <Description>Generate .NET API documentation in markdown using Roslyn code analysis</Description>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NoWarn>$(NoWarn);NU5100;NU5105</NoWarn>
+    <OutputType>Exe</OutputType>
+    <!--        <PackageIcon>dcogen.png</PackageIcon>-->
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/alexeyzimarev/docgen</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/alexeyzimarev/docgen/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RollForward>major</RollForward>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <RootNamespace>docgen-cli</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Buildalyzer.Workspaces" Version="2.6.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="3.5.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.3" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20158.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DocGen.Markdown\DocGen.Markdown.csproj" />
+    <ProjectReference Include="..\DocGen.Metadata\DocGen.Metadata.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\DocGen\Program.cs">
+      <Link>Program.cs</Link>
+    </Compile>
+  </ItemGroup>
+</Project>
