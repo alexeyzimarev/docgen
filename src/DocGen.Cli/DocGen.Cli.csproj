@@ -5,6 +5,7 @@
     <LangVersion>8</LangVersion>
     <PackAsTool>true</PackAsTool>
     <AssemblyName>docgen</AssemblyName>
+    <PackageId>DocGen.Cli</PackageId>
     <DefineConstants>$(DefineConstants);DOCGEN</DefineConstants>
     <Description>Generate .NET API documentation in markdown using Roslyn code analysis</Description>
     <DevelopmentDependency>true</DevelopmentDependency>
@@ -18,7 +19,6 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RollForward>major</RollForward>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-    <RootNamespace>docgen-cli</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Buildalyzer.Workspaces" Version="2.6.0" />
