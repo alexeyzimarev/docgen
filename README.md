@@ -43,3 +43,10 @@ docgen -p ./src/**/*.csproj -o docs
 ```
 
 Use the `-o` option to specify the output path for markdown files.
+
+## Roadmap
+
+- Handle `/// inherit-doc`
+- Cross-reference known items with links
+- Make frontmatter generation configurable
+- Compile-time library in addition to the CLI tool
