@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using DocGen.Markdown;
 using DocGen.Metadata;
 using DocGen.Metadata.Extensions;
+using DocGen.Metadata.Models;
 using ProjectAnalyzer = DocGen.Metadata.ProjectAnalyzer;
 
 namespace DocGen
@@ -46,15 +47,17 @@ namespace DocGen
                     new[] {"--output", "-o"}, () => new DirectoryInfo(Directory.GetCurrentDirectory()), "Output path for generated Markdown files"
                 )
             );
+            
+            rootCommand.AddOption(new Option<MemberType>("--scope", () => MemberType.Assembly, "File scope"));
 
             rootCommand.AddOption(new Option<bool>("--verbose", () => false, "Verbose logging"));
             // rootCommand.AddOption(new Option<string>("--include", "Specify regex to include projects"));
             // rootCommand.AddOption(new Option<string>("--exclude", "Specify regex to exclude projects"));
-            rootCommand.Handler = CommandHandler.Create<IEnumerable<FileInfo>, FileInfo, DirectoryInfo, bool>(GenerateMarkdown);
+            rootCommand.Handler = CommandHandler.Create<IEnumerable<FileInfo>, FileInfo, DirectoryInfo, MemberType, bool>(GenerateMarkdown);
             return rootCommand;
         }
 
-        static async Task GenerateMarkdown(IEnumerable<FileInfo> project, FileInfo solution, DirectoryInfo output, bool verbose)
+        static async Task GenerateMarkdown(IEnumerable<FileInfo> project, FileInfo solution, DirectoryInfo output, MemberType scope, bool verbose)
         {
             var loggerFactory = Logging.ConfigureLogging(cfg => cfg.SetMinimumLevel(verbose ? LogLevel.Debug : LogLevel.Information).AddConsole());
 
@@ -85,7 +88,7 @@ namespace DocGen
 
             await analyzer.Analyze();
             var metadata = analyzer.ExtractMetadata();
-            await Task.WhenAll(metadata.Select(x => x.GenerateAssemblyMarkdown(output)));
+            await Task.WhenAll(metadata.Select(x => x.GenerateAssemblyMarkdown(output, scope)));
 
             log.LogInformation("Done :)");
         }

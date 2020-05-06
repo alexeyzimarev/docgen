@@ -9,22 +9,30 @@ namespace DocGen.Markdown
 {
     public static class Assembly
     {
-        public static Task GenerateAssemblyMarkdown(this MetadataItem item, DirectoryInfo output)
+        public static Task GenerateAssemblyMarkdown(
+            this MetadataItem item,
+            DirectoryInfo output,
+            MemberType scope
+        )
         {
-            if (item.Type != MemberType.Assembly)
-                throw new ArgumentException("Item is not an assembly", nameof(item));
+            if (item.Type != MemberType.Assembly) throw new ArgumentException("Item is not an assembly", nameof(item));
+
+            item.Name = Path.GetFileNameWithoutExtension(item.Name);
+
+            var scopes = scope == MemberType.Assembly
+                ? new[] {item}
+                : item.Items.Where(x => x.Type == scope);
 
             return Task.WhenAll(
-                item.Items
-                    .Where(x => x.Type == MemberType.Namespace)
-                    .Select(
-                        x =>
-                        {
-                            var content  = GenerateMarkdown(x, 1);
-                            var fileName = Path.Combine(output.FullName, $"{x.Name}.md");
-                            return File.WriteAllTextAsync(fileName, content);
-                        }
-                    )
+                scopes.Select(
+                    x =>
+                    {
+                        var content     = GenerateMarkdown(x, 1);
+                        var fileName    = Path.Combine(output.FullName, $"{x.Name}.md");
+                        var frontMatter = $"---\r\ntitle: {x.Name}\r\n---\r\n\r\n";
+                        return File.WriteAllTextAsync(fileName, frontMatter + content);
+                    }
+                )
             );
         }
 
@@ -40,16 +48,17 @@ namespace DocGen.Markdown
                 MemberType.Property    => item.GeneratePropertyMarkdown(level),
                 MemberType.Enum        => item.GenerateEnumMarkdown(level),
                 MemberType.Field       => item.GenerateFieldMarkdown(level, parent),
-                MemberType.Namespace => MarkdownBase.Header(
-                    level,
-                    $"Namespace: {item.Name}{NewLine}"
-                ),
-                _ => item + NewLine
+                MemberType.Namespace   => MarkdownBase.Header(level, $"Namespace: {item.Name}{NewLine}"),
+                MemberType.Assembly    => MarkdownBase.Header(level, $"Assembly: {item.Name}{NewLine}"),
+                _                      => item + NewLine
             };
 
             var nestedContent = item.Items == null
                 ? ""
-                : string.Join(NewLine, item.Items.Select(x => GenerateMarkdown(x, level + 1, item)));
+                : string.Join(
+                    NewLine,
+                    item.Items.Select(x => GenerateMarkdown(x, level + 1, item))
+                );
 
             return itemContent + nestedContent;
         }
